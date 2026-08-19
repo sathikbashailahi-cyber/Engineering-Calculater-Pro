@@ -18,8 +18,12 @@ jobs:
         run: |
           pwd
           ls -la
-          test -f pubspec.yaml
-          test -f lib/main.dart
+          echo "===== PUBSPEC ====="
+          cat pubspec.yaml
+          echo "===== MAIN DART ====="
+          ls -lh lib/main.dart
+          echo "===== CHECK COMPLETE ====="
+      
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
