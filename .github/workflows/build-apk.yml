@@ -11,11 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -29,12 +24,165 @@ jobs:
             --project-name=engineering_calculator_pro \
             --platforms=android
 
-      - name: Copy application source
+      - name: Create Engineering Calculator Pro app
         run: |
-          cp lib/main.dart /tmp/engineering_calculator_pro/lib/main.dart
-          cp pubspec.yaml /tmp/engineering_calculator_pro/pubspec.yaml
+          cat > /tmp/engineering_calculator_pro/lib/main.dart <<'EOF'
+          import 'package:flutter/material.dart';
 
-      - name: Build APK
+          void main() {
+            runApp(const EngineeringCalculatorPro());
+          }
+
+          class EngineeringCalculatorPro extends StatelessWidget {
+            const EngineeringCalculatorPro({super.key});
+
+            @override
+            Widget build(BuildContext context) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'ILAHI FABRICATORS Engineering Calculator Pro',
+                theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: Colors.blueGrey,
+                  ),
+                  useMaterial3: true,
+                ),
+                home: const HomePage(),
+              );
+            }
+          }
+
+          class HomePage extends StatelessWidget {
+            const HomePage({super.key});
+
+            static const modules = [
+              ['Pipe Weight', Icons.linear_scale],
+              ['Plate Weight', Icons.layers],
+              ['Structural', Icons.account_tree],
+              ['Tank Calculator', Icons.local_drink],
+              ['Labour', Icons.engineering],
+              ['Salary & OT', Icons.payments],
+              ['Material Stock', Icons.inventory_2],
+              ['Quotation', Icons.request_quote],
+              ['GST Invoice', Icons.receipt_long],
+              ['Profit & Loss', Icons.analytics],
+              ['Reports', Icons.description],
+              ['Settings', Icons.settings],
+            ];
+
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text(
+                    'Engineering Calculator Pro',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  centerTitle: true,
+                ),
+                body: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF263238),
+                            Color(0xFF546E7A),
+                          ],
+                        ),
+                      ),
+                      child: const Column(
+                        children: [
+                          Text(
+                            'ILAHI FABRICATORS',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          Text(
+                            'Engineering Calculator Pro',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Version 1.0',
+                            style: TextStyle(color: Colors.white60),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.all(12),
+                        itemCount: modules.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.9,
+                        ),
+                        itemBuilder: (context, index) {
+                          final module = modules[index];
+
+                          return Card(
+                            elevation: 3,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      '${module[0]} - Coming Soon',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      module[1] as IconData,
+                                      size: 34,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      module[0] as String,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }
+          EOF
+
+      - name: Build ARM64 APK
         working-directory: /tmp/engineering_calculator_pro
         run: |
           flutter pub get
