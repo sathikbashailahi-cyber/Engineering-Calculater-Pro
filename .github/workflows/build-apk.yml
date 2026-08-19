@@ -1,0 +1,39 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.0'
+          channel: stable
+          cache: true
+
+      - name: Create Flutter project structure
+        run: |
+          flutter create . --platforms=android
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build ARM64 APK
+        run: |
+          flutter build apk --release --target-platform android-arm64
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: engineering-calculator-pro-arm64
+          path: build/app/outputs/flutter-apk/app-release.apk
