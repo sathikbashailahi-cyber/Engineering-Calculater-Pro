@@ -22,8 +22,8 @@ jobs:
           cache: true
 
       - name: Create Flutter project structure
-        run: |
-          flutter create . --project-name engineering calculator_pro--platforms=android
+        run: |flutter create . --project-name=engineering_calculator_pro --platforms=android
+          flutter create . --project-name enginee
 
       - name: Get dependencies
         run: flutter pub get
