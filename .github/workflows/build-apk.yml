@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Flutter
@@ -21,29 +21,25 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Backup Engineering Calculator Pro source
+      - name: Create Flutter project
         run: |
-          cp lib/main.dart /tmp/main.dart
-          cp pubspec.yaml /tmp/pubspec.yaml
+          flutter create /tmp/engineering_calculator_pro \
+            --project-name=engineering_calculator_pro \
+            --platforms=android
 
-      - name: Create Android project
+      - name: Copy application source
         run: |
-          flutter create . --project-name=engineering_calculator_pro --platforms=android
+          cp lib/main.dart /tmp/engineering_calculator_pro/lib/main.dart
+          cp pubspec.yaml /tmp/engineering_calculator_pro/pubspec.yaml
 
-      - name: Restore Engineering Calculator Pro source
+      - name: Build APK
+        working-directory: /tmp/engineering_calculator_pro
         run: |
-          cp /tmp/main.dart lib/main.dart
-          cp /tmp/pubspec.yaml pubspec.yaml
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Build ARM64 APK
-        run: |
+          flutter pub get
           flutter build apk --release --target-platform android-arm64
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: engineering-calculator-pro-arm64
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: /tmp/engineering_calculator_pro/build/app/outputs/flutter-apk/app-release.apk
