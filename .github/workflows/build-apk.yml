@@ -27,8 +27,11 @@ jobs:
           channel: stable
 
       - name: Flutter Pub Get
-        run: flutter pub get
-
+        run: 
+          echo "Checking Flutter project..."
+          ls -la
+          echo "Checking pubspec.yaml..."
+          cat pubspec.yaml
       - name: Flutter Analyze
         run: flutter analyze
 
