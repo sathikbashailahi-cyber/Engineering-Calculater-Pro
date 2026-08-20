@@ -279,9 +279,16 @@ class StructuralPage extends StatelessWidget {
         'Quantity',
       ],
       calculate: (v) {
-        final total = v[0] * v[1] * v[2];
+        final unitWeight = v[0];
+        final length = v[1];
+        final quantity = v[2];
 
-        return 'Total Weight: ${total.toStringAsFixed(2)} kg';
+        final totalWeight = unitWeight * length * quantity;
+
+        return 'Unit Weight: ${unitWeight.toStringAsFixed(2)} kg/m\n'
+            'Length: ${length.toStringAsFixed(2)} m\n'
+            'Quantity: ${quantity.toStringAsFixed(0)}\n'
+            'Total Weight: ${totalWeight.toStringAsFixed(2)} kg';
       },
     );
   }
